@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context.jsx';
 import { QuickPrefs, isLite } from '../prefs.jsx';
 import { Avatar, DrawnCheck, Icons, ProgressTrack, Spinner, StatusBadge } from '../components/ui.jsx';
-import { api } from '../api.js';
+import { api, IS_DEMO } from '../api.js';
 
 const Eye = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -255,7 +255,26 @@ export default function Login() {
                 </button>
               ))}
             </div>
-            {demoSite && <small className="hint">Site de demonstração: os dados voltam ao estado inicial de tempos em tempos.</small>}
+            {demoSite && !IS_DEMO && <small className="hint">Site de demonstração: os dados voltam ao estado inicial de tempos em tempos.</small>}
+            {IS_DEMO && (
+              <div className="demo-browser">
+                <small className="hint">
+                  Demonstração: tudo roda no seu navegador e as mudanças ficam só aqui. Abra duas abas, uma como Técnico e outra como
+                  Colaborador, para ver o chat em tempo real.
+                </small>
+                <button
+                  type="button"
+                  className="btn-link demo-reset"
+                  onClick={async () => {
+                    if (!window.confirm('Apagar as suas mudanças e voltar aos dados de exemplo?')) return;
+                    (await import('../demo/store.js')).resetDemo();
+                    window.location.reload();
+                  }}
+                >
+                  Restaurar dados de exemplo
+                </button>
+              </div>
+            )}
           </div>
           <p className="switch-line">
             Ainda não tem conta?{' '}

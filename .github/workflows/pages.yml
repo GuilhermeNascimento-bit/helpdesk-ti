@@ -1,0 +1,49 @@
+# Publica a demonstração no GitHub Pages a cada envio para a main.
+# Nessa versão não há servidor: a "API" e o tempo real rodam no navegador (VITE_DEMO=1).
+name: Demonstração no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - run: npm ci --prefix client
+      - run: npm run build --prefix client
+        env:
+          VITE_DEMO: "1"
+          VITE_BASE: /${{ github.event.repository.name }}/
+      # O GitHub Pages entrega o 404.html para endereços internos (ex.: /chamados/5): o app abre a página certa
+      - run: cp client/dist/index.html client/dist/404.html
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: client/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

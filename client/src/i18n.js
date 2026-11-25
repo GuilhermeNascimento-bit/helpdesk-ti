@@ -380,6 +380,12 @@ const EN = {
   'O navegador bloqueou as notificações': 'The browser blocked notifications',
   'Abrir chamado ': 'New ticket ',
 
+  'Demonstração: tudo roda no seu navegador e as mudanças ficam só aqui. Abra duas abas, uma como Técnico e outra como Colaborador, para ver o chat em tempo real.':
+    'Demo: everything runs in your browser and changes stay here. Open two tabs, one as Technician and one as Employee, to see the real-time chat.',
+  'Restaurar dados de exemplo': 'Restore sample data',
+  'Na demonstração, PDFs e textos podem ter até 1,5 MB.': 'In the demo, PDFs and text files can be up to 1.5 MB.',
+  'O armazenamento do navegador encheu. Restaure os dados da demonstração na tela de login.': 'Browser storage is full. Restore the demo data on the sign-in screen.',
+
   // Cores do site
   'Cor do site': 'Site color',
   'Petróleo': 'Petrol',

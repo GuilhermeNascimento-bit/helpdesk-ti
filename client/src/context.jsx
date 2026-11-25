@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
-import { api, getToken, setToken } from './api.js';
+import { api, getToken, setToken, IS_DEMO } from './api.js';
 
 // ---------- Autenticação ----------
 const AuthCtx = createContext(null);
@@ -48,10 +48,22 @@ export function SocketProvider({ children }) {
 
   useEffect(() => {
     if (!user) return;
-    const s = io({ auth: { token: getToken() } });
-    setSocket(s);
+    let s;
+    let alive = true;
+    if (IS_DEMO) {
+      // GitHub Pages: tempo real entre as abas do próprio navegador
+      import('./demo/realtime.js').then((m) => {
+        if (!alive) return;
+        s = m.createDemoSocket();
+        setSocket(s);
+      });
+    } else {
+      s = io({ auth: { token: getToken() } });
+      setSocket(s);
+    }
     return () => {
-      s.disconnect();
+      alive = false;
+      s?.disconnect();
       setSocket(null);
     };
   }, [user?.id]);

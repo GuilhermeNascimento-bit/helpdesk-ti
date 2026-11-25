@@ -16,7 +16,7 @@ import './settings-page.css';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <PrefsProvider>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
       <AuthProvider>
         <ToastProvider>
           <SocketProvider>

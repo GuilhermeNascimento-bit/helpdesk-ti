@@ -2,7 +2,13 @@
 
 App web de chamados de T.I: o colaborador abre um chamado, um técnico assume, os dois conversam por chat em tempo real e o técnico resolve **online** ou **agenda uma visita presencial**. No fim, o colaborador avalia o atendimento.
 
-## Publicar no Render (demonstração pública)
+## Demonstração online
+
+**https://guilhermenascimento-bit.github.io/helpdesk-ti/**: entre com um clique como Colaborador, Técnico ou Admin.
+
+Essa versão roda inteira no navegador, publicada no GitHub Pages pelo workflow `.github/workflows/pages.yml` (`VITE_DEMO=1`). A "API" (`client/src/demo/server.js`) segue as mesmas regras do servidor Node e guarda os dados no navegador de cada visitante. O tempo real funciona entre abas do mesmo navegador. Um técnico robô assume os chamados novos e responde no chat, para quem testa numa aba só. Na tela de login dá pra restaurar os dados de exemplo.
+
+## Publicar no Render (servidor de verdade)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/GuilhermeNascimento-bit/helpdesk-ti)
 
