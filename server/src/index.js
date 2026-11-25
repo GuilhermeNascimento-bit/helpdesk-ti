@@ -10,6 +10,9 @@ import { ticketsRouter } from './routes/tickets.js';
 import { usersRouter } from './routes/users.js';
 import { statsRouter } from './routes/stats.js';
 import { discardUpload } from './uploads.js';
+import { DEMO_MODE, seedDemo } from './demo.js';
+
+seedDemo();
 
 const app = express();
 app.disable('x-powered-by');
@@ -23,6 +26,8 @@ app.use(
   })
 );
 
+// Usado pelo Render para saber se o serviço está no ar, e pelo login para saber se é a demonstração
+app.get('/api/health', (_req, res) => res.json({ ok: true, demo: DEMO_MODE }));
 app.use('/api/auth', authRouter);
 app.use('/api/tickets', ticketsRouter);
 app.use('/api/users', usersRouter);

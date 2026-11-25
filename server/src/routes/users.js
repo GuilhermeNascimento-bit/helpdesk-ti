@@ -4,6 +4,7 @@ import { db, nowIso } from '../db.js';
 import { requireAuth, requireRole, PUBLIC_USER_COLS } from '../auth.js';
 import { ROLES } from '../constants.js';
 import { emitPendingUser } from '../realtime.js';
+import { isDemoAccount } from '../demo.js';
 
 export const usersRouter = Router();
 usersRouter.use(requireAuth);
@@ -87,6 +88,9 @@ usersRouter.delete('/:id', (req, res) => {
 usersRouter.patch('/:id', (req, res) => {
   const id = Number(req.params.id);
   const current = getUser(id);
+  if (current && isDemoAccount(current.email) && ['email', 'role', 'active', 'password'].some((k) => req.body?.[k] !== undefined && String(req.body[k]) !== String(k === 'active' ? !!current.active : current[k]))) {
+    return bad(res, 'Esta é uma conta de demonstração: e-mail, perfil, senha e status não podem ser alterados.', 403);
+  }
   if (!current) return bad(res, 'Usuário não encontrado.', 404);
   const b = req.body || {};
   const fields = {};

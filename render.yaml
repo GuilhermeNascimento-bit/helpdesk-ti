@@ -1,0 +1,20 @@
+# Publicação no Render (plano gratuito) como demonstração pública.
+# No Render: New → Blueprint → escolha este repositório. Ele lê este arquivo e cria o serviço.
+services:
+  - type: web
+    name: helpdesk-ti
+    runtime: node
+    plan: free
+    buildCommand: npm run render-build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: DEMO_MODE # dados de exemplo e contas de demonstração protegidas
+        value: "1"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DISPLAY_TZ
+        value: America/Sao_Paulo

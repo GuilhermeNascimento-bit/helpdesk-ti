@@ -2,6 +2,18 @@
 
 App web de chamados de T.I: o colaborador abre um chamado, um técnico assume, os dois conversam por chat em tempo real e o técnico resolve **online** ou **agenda uma visita presencial**. No fim, o colaborador avalia o atendimento.
 
+## Publicar no Render (demonstração pública)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/GuilhermeNascimento-bit/helpdesk-ti)
+
+O `render.yaml` cria um serviço web gratuito que compila o frontend e serve tudo pelo mesmo servidor (API, chat em tempo real e páginas). Com `DEMO_MODE=1`:
+
+- o banco começa com chamados de exemplo em todas as situações, mais técnicos, colaboradores e um cadastro aguardando aprovação;
+- na tela de login, os botões Colaborador / Técnico / Admin entram com um clique;
+- as contas de demonstração não podem ter senha, e-mail, perfil ou status alterados.
+
+No plano gratuito o servidor "dorme" depois de 15 minutos parado, e o primeiro acesso leva cerca de 1 minuto. A cada reinício o disco é apagado e os dados voltam ao estado inicial.
+
 ## Como rodar
 
 ```bash

@@ -316,6 +316,11 @@ const EN = {
   'Novo cadastro para aprovar': 'New sign-up to approve',
   'Conectado em tempo real': 'Connected in real time',
 
+  'Entre com um clique para conhecer o sistema:': 'Sign in with one click to try the system:',
+  'Site de demonstração: os dados voltam ao estado inicial de tempos em tempos.': 'Demo site: data resets to its initial state from time to time.',
+  'Esta é uma conta de demonstração: e-mail, perfil, senha e status não podem ser alterados.':
+    "This is a demo account: email, role, password and status can't be changed.",
+
   // Cores do site
   'Cor do site': 'Site color',
   'Petróleo': 'Petrol',

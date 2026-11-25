@@ -140,13 +140,30 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
   const [shake, setShake] = useState(0);
 
-  const submit = async (e) => {
+  // Site público de demonstração? (mostra um aviso para quem vem pelo portfólio)
+  const [demoSite, setDemoSite] = useState(false);
+  useEffect(() => {
+    api('/health').then((h) => setDemoSite(!!h?.demo)).catch(() => {});
+  }, []);
+
+  /** Botões de conta de demonstração: preenchem e já entram. */
+  const quickLogin = (d) => {
+    setEmail(d.email);
+    setPassword(d.password);
+    doLogin(d.email, d.password);
+  };
+
+  const submit = (e) => {
     e.preventDefault();
+    doLogin(email, password);
+  };
+
+  const doLogin = async (em, pw) => {
     setError('');
     setPending(false);
     setBusy(true);
     try {
-      await login(email, password);
+      await login(em, pw);
     } catch (err) {
       const isPending = /aguardando a aprovação/.test(err.message);
       setPending(isPending);
@@ -223,22 +240,22 @@ export default function Login() {
           </button>
 
           <div className="demo">
-            <span>Contas de demonstração</span>
+            <span>{demoSite ? 'Entre com um clique para conhecer o sistema:' : 'Contas de demonstração'}</span>
             <div className="demo-list">
               {DEMO.map((d) => (
                 <button
                   type="button"
                   key={d.email}
+                  disabled={busy}
                   className={`chip chip-sm ${email === d.email ? 'chip-on' : ''}`}
-                  onClick={() => {
-                    setEmail(d.email);
-                    setPassword(d.password);
-                  }}
+                  onClick={() => quickLogin(d)}
+                  title={`${d.email} / ${d.password}`}
                 >
                   {d.label}
                 </button>
               ))}
             </div>
+            {demoSite && <small className="hint">Site de demonstração: os dados voltam ao estado inicial de tempos em tempos.</small>}
           </div>
           <p className="switch-line">
             Ainda não tem conta?{' '}

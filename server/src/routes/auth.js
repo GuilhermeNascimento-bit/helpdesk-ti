@@ -2,6 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { db, nowIso } from '../db.js';
 import { emitPendingUser } from '../realtime.js';
+import { isDemoAccount } from '../demo.js';
 import { signToken, requireAuth, PUBLIC_USER_COLS } from '../auth.js';
 
 export const authRouter = Router();
@@ -56,6 +57,7 @@ authRouter.post('/register', (req, res) => {
 });
 
 authRouter.post('/password', requireAuth, (req, res) => {
+  if (isDemoAccount(req.user.email)) return res.status(403).json({ error: 'A senha das contas de demonstração não pode ser trocada.' });
   const { current, next } = req.body || {};
   const row = db.prepare('SELECT password_hash FROM users WHERE id = ?').get(req.user.id);
   if (!bcrypt.compareSync(String(current || ''), row.password_hash)) {

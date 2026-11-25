@@ -74,7 +74,7 @@ export function Donut({ a, b, size = 120, labelA, labelB }) {
   const pa = total ? a / total : 0;
   return (
     <div className="donut-wrap">
-      <svg className="donut" viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`${labelA}: ${a}, ${labelB}: ${b}`}>
+      <svg className="donut" viewBox="0 0 100 100" width={size} height={size} style={{ width: size, height: size }} role="img" aria-label={`${labelA}: ${a}, ${labelB}: ${b}`}>
         <circle cx="50" cy="50" r={r} className="donut-bg" />
         {total > 0 && (
           <circle
