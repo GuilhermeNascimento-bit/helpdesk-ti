@@ -1,0 +1,104 @@
+/* =====================================================================
+   Barra do topo da T.I · cores do site · cadastro · aprovações
+   · tema escuro das pendências   (importado por último)
+   ===================================================================== */
+
+/* ---------- Barra do topo da T.I ---------- */
+.staff-main { min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
+.staff-top {
+  position: sticky; top: 0; z-index: 30; height: 56px; padding: 0 28px; display: flex; align-items: center; gap: 16px;
+  background: color-mix(in srgb, var(--paper) 82%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+}
+.staff-status { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.staff-main .main { flex: 1; }
+.staff-main .detail { height: calc(100vh - 57px); }
+.me-chip-text { display: flex; flex-direction: column; line-height: 1.15; }
+.me-chip-text b { font-size: 13px; font-weight: 600; }
+.me-chip-text small { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+.staff-top .me-chip { padding-right: 14px; }
+.sidebar .nav { flex: 1; }
+
+/* ---------- Cores do site ---------- */
+.swatches { display: flex; flex-wrap: wrap; gap: 7px; }
+.swatch {
+  width: 26px; height: 26px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: var(--sw);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); position: relative; transition: transform .2s var(--spring), box-shadow .2s;
+}
+.swatch:hover { transform: scale(1.12); }
+.swatch.on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--sw); }
+.swatch.on::after {
+  content: ""; position: absolute; inset: 0; margin: auto; width: 8px; height: 8px; border-radius: 50%; background: #fff;
+  animation: pop .3s var(--spring);
+}
+.swatch-custom { display: grid; place-items: center; overflow: hidden; background: conic-gradient(#ef4444, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7, #ef4444); }
+.swatch-custom.on { background: var(--sw); }
+.swatch-custom input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; border: 0; padding: 0; }
+.prefs-reset { font-size: 12px; padding: 0; height: auto; }
+.prefs-pop { max-height: calc(100vh - 80px); overflow-y: auto; }
+
+/* ---------- Cadastro ---------- */
+.switch-line { text-align: center; font-size: 13.5px; color: var(--muted); }
+.switch-line .btn-link { padding: 0; font-size: 13.5px; }
+.signup-form { gap: 12px; }
+.signup-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.signup-sent { align-items: center; text-align: center; justify-content: center; gap: 12px; }
+.signup-sent h2 { animation: rise .5s .45s var(--ease) both; }
+.signup-sent p { max-width: 320px; animation: rise .5s .55s var(--ease) both; }
+.signup-sent .btn { margin-top: 8px; animation: rise .5s .65s var(--ease) both; }
+.alert-info { background: color-mix(in srgb, var(--primary) 10%, var(--surface)); color: var(--primary-strong); border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); }
+
+/* ---------- Aprovações (admin) ---------- */
+.approvals { margin-bottom: 26px; }
+.count-alert { background: var(--led-red); color: #fff; }
+.approval-list { display: flex; flex-direction: column; gap: 8px; }
+.approval {
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.6fr) auto; gap: 18px; align-items: center; padding: 14px 18px;
+  border-left: 4px solid var(--led-amber); animation: row-in .45s var(--ease) both; animation-delay: calc(var(--i) * 50ms);
+}
+.approval.is-leaving { animation: leave .3s var(--ease) forwards; }
+.approval-who { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.approval-who div { display: flex; flex-direction: column; min-width: 0; }
+.approval-who strong { font-weight: 650; }
+.approval-who span { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.approval-info { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.approval-info div { min-width: 0; }
+.approval-info dt { font-size: 12px; color: var(--muted); }
+.approval-info dd { margin: 0; font-size: 13.5px; font-weight: 550; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.approval-actions { display: flex; align-items: center; gap: 8px; }
+.approval-actions select { height: 32px; border: 1px solid var(--line); border-radius: 9px; padding: 0 8px; background: var(--surface); }
+.btn-reject:hover:not(:disabled) { color: var(--led-red); border-color: var(--led-red); }
+
+/* ---------- Tema escuro: pendências ---------- */
+[data-theme="dark"] .pending-card { background: #2a1322; border-color: #4d2240; }
+[data-theme="dark"] .pending-kind, [data-theme="dark"] .pending-due b { color: #ff8fc8; }
+[data-theme="dark"] .pending-bar { background: rgba(214, 64, 127, .22); }
+[data-theme="dark"] .pending-card.is-overdue { background: #321417; border-color: #5c2226; }
+[data-theme="dark"] .pending-card.is-overdue .pending-kind, [data-theme="dark"] .pending-card.is-overdue .pending-due b { color: #ff8a8e; }
+[data-theme="dark"] .tcard-pending { background: #2a1322; }
+[data-theme="dark"] .tcard-pending small { color: #ff8fc8; }
+[data-theme="dark"] .tcard-pending.is-overdue { background: #321417; }
+[data-theme="dark"] .tcard-pending.is-overdue small, [data-theme="dark"] .tcard-pending.is-overdue svg { color: #ff8a8e; }
+[data-theme="dark"] .wait-kind, [data-theme="dark"] .choice-icon.tone-pink { background: #3d1530; color: #ff8fc8; }
+[data-theme="dark"] .wait-terceirizado { background: #132a4a; color: #8ab8ff; }
+[data-theme="dark"] .due-soon small { color: #f5c25a; }
+[data-theme="dark"] .due-late b, [data-theme="dark"] .due-late small { color: #ff8a8e; }
+[data-theme="dark"] .nav-count-soft { background: #4d2240; color: #ffc2df; }
+[data-theme="dark"] .kpi-late { background: #2a1214; border-color: #5c2226; }
+[data-theme="dark"] .approval-actions select { color-scheme: dark; }
+[data-theme="dark"] .alert-info { color: var(--accent-2); }
+
+@media (max-width: 900px) {
+  .staff-top { padding: 0 14px; }
+  .staff-status { display: none; }
+  .staff-top .topbar-right { margin-left: auto; }
+  .staff-main .detail { height: auto; }
+  .approval { grid-template-columns: 1fr; }
+  .approval-actions { justify-content: flex-end; }
+}
+@media (max-width: 520px) {
+  .signup-row { grid-template-columns: 1fr; }
+  .approval-info { grid-template-columns: 1fr 1fr; }
+}
+
+/* O Edge coloca um botão próprio de mostrar senha; já temos o nosso */
+input::-ms-reveal, input::-ms-clear { display: none; }

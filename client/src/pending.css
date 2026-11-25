@@ -1,0 +1,82 @@
+/* =====================================================================
+   Pendências: compra ou serviço terceirizado com prazo
+   ===================================================================== */
+:root { --led-pink: #d6407f; }
+.tone-pink { background: #fce8f1; color: #b02a64; }
+.led-pink { --c: var(--led-pink); }
+.track-pink { --tc: var(--led-pink); }
+
+.pending-card {
+  display: flex; gap: 12px; padding: 14px; border-radius: 14px; background: #fdf0f6; border: 1px solid #f6cfe0;
+  animation: pop .4s var(--spring);
+}
+.pending-icon {
+  width: 42px; height: 42px; border-radius: 12px; background: var(--led-pink); color: #fff;
+  display: grid; place-items: center; flex-shrink: 0;
+}
+.pending-icon svg { animation: bob 2.4s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-2px); } }
+.pending-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+.pending-kind { font-size: 12px; font-weight: 600; color: #b02a64; }
+.pending-text strong { font-family: var(--display); font-size: 16px; line-height: 1.25; overflow-wrap: anywhere; }
+.pending-due { font-size: 13px; color: var(--ink-2); }
+.pending-due b { color: #b02a64; }
+.pending-bar { height: 6px; border-radius: 999px; background: rgba(214, 64, 127, .15); overflow: hidden; margin-top: 6px; }
+.pending-bar i { display: block; height: 100%; background: var(--led-pink); border-radius: 999px; transform-origin: left; animation: grow-x .9s var(--ease) both; }
+.pending-hint { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+.pending-card.is-overdue { background: #fdecee; border-color: #f5c2c5; }
+.pending-card.is-overdue .pending-icon, .pending-card.is-overdue .pending-bar i { background: var(--led-red); }
+.pending-card.is-overdue .pending-kind, .pending-card.is-overdue .pending-due b { color: #c22d33; }
+.pending-card.is-overdue .pending-icon svg { animation: wiggle 1s ease-in-out infinite; }
+
+.pending-actions { display: flex; flex-direction: column; gap: 8px; }
+.resolve-choices .choice-wait { order: 3; }
+.resolve-choices { display: flex; flex-direction: column; }
+.choice-icon.tone-pink { background: #fce8f1; color: #b02a64; }
+.due-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.inline-form .segmented button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.inline-form .segmented svg { width: 15px; height: 15px; }
+
+/* Cartão do colaborador */
+.tcard-pending {
+  display: flex; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 10px; background: #fdf0f6;
+  font-size: 13px; color: var(--ink-2);
+}
+.tcard-pending svg { width: 16px; height: 16px; color: var(--led-pink); flex-shrink: 0; }
+.tcard-pending span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tcard-pending small { color: #b02a64; font-weight: 600; white-space: nowrap; }
+.tcard-pending.is-overdue { background: #fdecee; }
+.tcard-pending.is-overdue svg, .tcard-pending.is-overdue small { color: #c22d33; }
+
+/* Tabela de pendências */
+.tl-wait .tl-head, .tl-wait .tl-row { grid-template-columns: minmax(0, 1fr) minmax(0, 260px) 130px 140px; }
+.tl-wait-item { gap: 10px; }
+.wait-kind { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex-shrink: 0; background: #fce8f1; color: #b02a64; }
+.wait-kind svg { width: 16px; height: 16px; }
+.wait-terceirizado { background: #e6effd; color: #1f5fc4; }
+.wait-text { display: flex; flex-direction: column; min-width: 0; }
+.wait-text b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wait-text small { color: var(--muted); font-size: 12px; }
+.due { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.due b { font-weight: 600; font-size: 13.5px; }
+.due small { font-size: 12px; color: var(--muted); }
+.due-soon small { color: #9a5f00; font-weight: 600; }
+.due-late b, .due-late small { color: #c22d33; font-weight: 650; }
+.tl-wait .tl-head > span:last-child { text-align: right; }
+.tl-row.row-overdue::before { background: var(--led-red); }
+
+/* Menu e painel */
+.nav-count-soft { background: #f6cfe0; color: #7e1c47; }
+.nav-count-late { background: var(--led-red); color: #fff; animation: bump .5s var(--spring), led-pulse 1.8s ease-out infinite; --c: var(--led-red); }
+.kpis { grid-template-columns: repeat(5, 1fr); }
+.kpi-late { background: #fff1f2; border-color: #f5c2c5; }
+a.kpi-late:hover { border-color: var(--led-red); }
+
+@media (max-width: 1100px) {
+  .kpis { grid-template-columns: repeat(3, 1fr); }
+  .tl-wait .tl-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .tl-wait .tl-row > .tl-cell { display: none; }
+}
+@media (max-width: 900px) {
+  .kpis { grid-template-columns: 1fr 1fr; }
+}
