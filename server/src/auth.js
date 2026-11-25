@@ -15,7 +15,7 @@ const JWT_SECRET =
         return s;
       })());
 
-export const PUBLIC_USER_COLS = 'id, name, email, role, department, location, active, approved, created_at';
+export const PUBLIC_USER_COLS = 'id, name, email, role, department, location, active, approved, avatar_url, created_at';
 
 export const signToken = (user) => jwt.sign({ uid: user.id }, JWT_SECRET, { expiresIn: '7d' });
 

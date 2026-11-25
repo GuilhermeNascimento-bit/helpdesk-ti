@@ -56,6 +56,9 @@ export const isStaff = (user) => user?.role === 'tecnico' || user?.role === 'adm
 export const fmtDate = (iso) =>
   iso ? new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '';
 
+/** Só a data: 25/11/2026 */
+export const fmtDateOnly = (iso) => (iso ? new Date(iso).toLocaleDateString('pt-BR') : '');
+
 export const fmtTime = (iso) => new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
 /** "hoje às 14:00", "amanhã às 09:00", "sex., 28/11 às 10:30" */
@@ -75,7 +78,7 @@ export function timeAgo(iso) {
   if (s < 3600) return `há ${Math.floor(s / 60)} min`;
   if (s < 86400) return `há ${Math.floor(s / 3600)} h`;
   const d = Math.floor(s / 86400);
-  return d === 1 ? 'ontem' : d < 30 ? `há ${d} dias` : fmtDate(iso).split(' ')[0];
+  return d === 1 ? 'ontem' : d < 30 ? `há ${d} dias` : fmtDateOnly(iso);
 }
 
 export const greeting = () => {

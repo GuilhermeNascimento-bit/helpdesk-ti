@@ -122,7 +122,7 @@ export default function AdminDashboard() {
                 <tr key={t.id}>
                   <td>
                     <span className="user-cell">
-                      <Avatar name={t.name} size={26} /> {t.name}
+                      <Avatar name={t.name} src={t.avatar_url} size={26} /> {t.name}
                     </span>
                   </td>
                   <td className="num">{t.active}</td>

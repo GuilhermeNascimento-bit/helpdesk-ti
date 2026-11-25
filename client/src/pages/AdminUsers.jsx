@@ -79,7 +79,7 @@ export default function AdminUsers() {
                 <tr key={u.id} className={u.active ? '' : 'row-off'}>
                   <td>
                     <div className="user-cell">
-                      <Avatar name={u.name} size={30} />
+                      <Avatar name={u.name} src={u.avatar_url} size={30} />
                       <div>
                         <strong>{u.name}</strong>
                         <small>{u.email}</small>
@@ -229,7 +229,7 @@ function ApprovalCard({ u, i, onDone }) {
   return (
     <div className={`approval card ${leaving ? 'is-leaving' : ''}`} style={{ '--i': i }}>
       <div className="approval-who">
-        <Avatar name={u.name} size={40} />
+        <Avatar name={u.name} src={u.avatar_url} size={40} />
         <div>
           <strong>{u.name}</strong>
           <span>{u.email}</span>

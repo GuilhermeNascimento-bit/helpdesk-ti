@@ -106,6 +106,11 @@ if (!db.prepare('PRAGMA table_info(users)').all().some((c) => c.name === 'approv
   db.exec('ALTER TABLE users ADD COLUMN approved INTEGER NOT NULL DEFAULT 1');
 }
 
+// Foto de perfil (opcional)
+if (!db.prepare('PRAGMA table_info(users)').all().some((c) => c.name === 'avatar_url')) {
+  db.exec('ALTER TABLE users ADD COLUMN avatar_url TEXT');
+}
+
 export const nowIso = () => new Date().toISOString();
 
 // Usuários de demonstração na primeira execução

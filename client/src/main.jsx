@@ -11,6 +11,7 @@ import './layout.css';
 import './theme.css';
 import './pending.css';
 import './settings.css';
+import './settings-page.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

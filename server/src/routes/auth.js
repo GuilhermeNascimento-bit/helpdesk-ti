@@ -1,6 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
-import { db, nowIso } from '../db.js';
+import { db, nowIso, UPLOAD_DIR } from '../db.js';
+import { upload, fileInfo, discardUpload } from '../uploads.js';
 import { emitPendingUser } from '../realtime.js';
 import { isDemoAccount } from '../demo.js';
 import { signToken, requireAuth, PUBLIC_USER_COLS } from '../auth.js';
@@ -23,6 +26,41 @@ authRouter.post('/login', (req, res) => {
 });
 
 authRouter.get('/me', requireAuth, (req, res) => res.json(req.user));
+
+// ---------- Configurações do próprio usuário ----------
+const me = (id) => db.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users WHERE id = ?`).get(id);
+
+authRouter.patch('/me', requireAuth, (req, res) => {
+  const b = req.body || {};
+  const name = String(b.name ?? req.user.name).trim();
+  const department = String(b.department ?? req.user.department ?? '').trim();
+  const location = String(b.location ?? req.user.location ?? '').trim();
+  if (name.length < 3 || !name.includes(' ')) return res.status(400).json({ error: 'Informe seu nome e sobrenome.' });
+  if (name.length > 80 || department.length > 60 || location.length > 80) return res.status(400).json({ error: 'Texto muito longo.' });
+  db.prepare('UPDATE users SET name = ?, department = ?, location = ? WHERE id = ?').run(name, department || null, location || null, req.user.id);
+  res.json(me(req.user.id));
+});
+
+const removeAvatarFile = (url) => {
+  if (url?.startsWith('/uploads/')) fs.rm(path.join(UPLOAD_DIR, path.basename(url)), { force: true }, () => {});
+};
+
+authRouter.post('/me/avatar', requireAuth, upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Escolha uma imagem.' });
+  if (!req.file.mimetype.startsWith('image/')) {
+    discardUpload(req);
+    return res.status(400).json({ error: 'A foto precisa ser uma imagem (PNG, JPG, GIF ou WEBP).' });
+  }
+  removeAvatarFile(req.user.avatar_url);
+  db.prepare('UPDATE users SET avatar_url = ? WHERE id = ?').run(fileInfo(req.file).url, req.user.id);
+  res.json(me(req.user.id));
+});
+
+authRouter.delete('/me/avatar', requireAuth, (req, res) => {
+  removeAvatarFile(req.user.avatar_url);
+  db.prepare('UPDATE users SET avatar_url = NULL WHERE id = ?').run(req.user.id);
+  res.json(me(req.user.id));
+});
 
 // ---------- Cadastro (fica pendente até o admin aprovar) ----------
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

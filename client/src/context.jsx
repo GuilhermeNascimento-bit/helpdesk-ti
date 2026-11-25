@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  return <AuthCtx.Provider value={{ user, loading, login, logout }}>{children}</AuthCtx.Provider>;
+  return <AuthCtx.Provider value={{ user, loading, login, logout, updateUser: setUser }}>{children}</AuthCtx.Provider>;
 }
 
 // ---------- Tempo real ----------

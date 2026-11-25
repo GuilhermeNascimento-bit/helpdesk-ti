@@ -11,6 +11,7 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminUsers from './pages/AdminUsers.jsx';
 import TechStats from './pages/TechStats.jsx';
 import MyTickets from './pages/MyTickets.jsx';
+import Settings from './pages/Settings.jsx';
 
 const home = (user) => (user.role === 'admin' ? '/painel' : user.role === 'tecnico' ? '/fila' : '/chamados');
 
@@ -40,6 +41,7 @@ export default function App() {
         {staff && <Route path="desempenho" element={<TechStats />} />}
         {user.role === 'admin' && <Route path="painel" element={<AdminDashboard />} />}
         {user.role === 'admin' && <Route path="usuarios" element={<AdminUsers />} />}
+        <Route path="configuracoes" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

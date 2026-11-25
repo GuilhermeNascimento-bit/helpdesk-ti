@@ -194,7 +194,7 @@ function Messages({ ticket, messages, me, typing, initialIds }) {
     <div className="messages" ref={ref}>
       <div className="problem">
         <div className="problem-head">
-          <Avatar name={ticket.requester_name} size={30} />
+          <Avatar name={ticket.requester_name} src={ticket.requester_avatar} size={30} />
           <div>
             <strong>{ticket.requester_name}</strong>
             <span className="muted"> descreveu o problema {fmtWhen(ticket.created_at)}</span>
@@ -248,7 +248,7 @@ function Message({ m, mine, isNew }) {
   const staff = m.user_role === 'tecnico' || m.user_role === 'admin';
   return (
     <div className={`msg ${mine ? 'mine' : ''} ${isNew ? 'enter' : ''}`}>
-      {!mine && <Avatar name={m.user_name} size={30} />}
+      {!mine && <Avatar name={m.user_name} src={m.user_avatar} size={30} />}
       <div className="msg-col">
         {!mine && (
           <div className="msg-author">
@@ -394,7 +394,7 @@ function StatusPanel({ ticket, me, act }) {
       )}
       {s === 'em_atendimento' && (
         <div className="state">
-          <Avatar name={ticket.technician_name} size={36} />
+          <Avatar name={ticket.technician_name} src={ticket.technician_avatar} size={36} />
           <p>
             <b>{ticket.technician_name}</b> {isRequester ? 'está cuidando do seu chamado. Fale com ele(a) pelo chat.' : 'está cuidando deste chamado.'}
           </p>

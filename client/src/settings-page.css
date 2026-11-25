@@ -1,0 +1,134 @@
+/* =====================================================================
+   Página de Configurações · foto de perfil · interruptores
+   ===================================================================== */
+
+/* Foto no avatar */
+.avatar-photo { overflow: hidden; background: var(--line-2); }
+.avatar-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Atalho do usuário no topo */
+a.me-chip { transition: border-color .2s, background .2s; }
+a.me-chip:hover { border-color: var(--primary); }
+.prefs-all {
+  display: block; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-2);
+  font-size: 13.5px; font-weight: 600; color: var(--primary);
+}
+.prefs-all:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Estrutura */
+.settings { max-width: 1080px; }
+.settings-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; align-items: start; }
+.settings-nav { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 76px; }
+.settings-tab {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid transparent;
+  background: none; cursor: pointer; text-align: left; color: var(--ink-2); transition: background .15s, border-color .15s, color .15s;
+}
+.settings-tab:hover { background: var(--surface); }
+.settings-tab.active { background: var(--surface); border-color: var(--line); color: var(--ink); box-shadow: var(--shadow-sm); }
+.settings-tab > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.settings-tab b { font-weight: 600; font-size: 14px; }
+.settings-tab small { font-size: 12px; color: var(--muted); }
+.settings-tab-icon {
+  width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0;
+  background: var(--line-2); color: var(--muted); transition: background .2s, color .2s;
+}
+.settings-tab-icon svg { width: 17px; height: 17px; }
+.settings-tab.active .settings-tab-icon { background: var(--primary-soft); color: var(--primary); }
+
+.settings-body { display: flex; flex-direction: column; gap: 14px; animation: rise .35s var(--ease); }
+.settings-card { padding: 22px 24px; display: flex; flex-direction: column; gap: 20px; }
+.settings-card > header h2 { font-size: 19px; }
+.settings-card > header p { margin-top: 3px; }
+.settings-form { display: flex; flex-direction: column; gap: 16px; }
+.settings-form.narrow { max-width: 420px; }
+.form-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.settings-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 4px; }
+.field input:disabled { background: var(--surface-2); color: var(--muted); }
+.hint-error { color: var(--led-red); }
+
+/* Foto de perfil */
+.profile-photo { display: flex; align-items: center; gap: 18px; padding-bottom: 20px; border-bottom: 1px solid var(--line-2); }
+.photo-drop { position: relative; border: 0; padding: 0; background: none; border-radius: 50%; cursor: pointer; flex-shrink: 0; }
+.photo-drop .avatar { box-shadow: 0 0 0 4px var(--surface), 0 0 0 5px var(--line); }
+.photo-overlay {
+  position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  background: rgba(0, 0, 0, .45); opacity: 0; transition: opacity .2s;
+}
+.photo-overlay svg { width: 24px; height: 24px; }
+.photo-drop:hover .photo-overlay, .photo-drop:focus-visible .photo-overlay, .photo-drop:disabled .photo-overlay { opacity: 1; }
+.photo-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.photo-text strong { font-family: var(--display); font-size: 18px; }
+.photo-text .row-actions { justify-content: flex-start; margin-top: 8px; align-items: center; }
+.photo-text .btn-danger-link { margin: 0; }
+
+/* Força da senha */
+.strength { display: flex; align-items: center; gap: 10px; }
+.strength-bar { flex: 1; height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden; }
+.strength-bar i { display: block; height: 100%; border-radius: inherit; transition: width .3s var(--ease), background .3s; }
+.strength small { font-size: 12px; font-weight: 600; min-width: 110px; text-align: right; }
+.strength-1 i { background: var(--led-red); } .strength-1 small { color: var(--led-red); }
+.strength-2 i { background: var(--led-amber); } .strength-2 small { color: #9a5f00; }
+.strength-3 i { background: var(--led-blue); } .strength-3 small { color: var(--led-blue); }
+.strength-4 i { background: var(--led-green); } .strength-4 small { color: var(--led-green); }
+
+/* Aparência com prévia ao vivo */
+.appearance { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 28px; align-items: start; }
+.appearance .prefs-panel { gap: 18px; }
+.preview {
+  display: grid; grid-template-columns: 70px 1fr; height: 250px; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); position: sticky; top: 90px;
+}
+.preview i, .preview b { display: block; }
+.preview-side { background: var(--side); padding: 14px 10px; display: flex; flex-direction: column; gap: 8px; transition: background .3s; }
+.pv-logo { width: 22px; height: 22px; border-radius: 7px; background: linear-gradient(145deg, var(--accent-2), var(--primary)); margin-bottom: 8px; }
+.pv-nav { height: 10px; border-radius: 4px; background: rgba(255, 255, 255, .12); }
+.pv-nav.on { background: var(--side-2); box-shadow: inset 3px 0 0 var(--accent-2); }
+.preview-main { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.pv-title { width: 45%; height: 12px; border-radius: 4px; background: var(--ink); opacity: .85; }
+.pv-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+.pv-line { width: 70%; height: 8px; border-radius: 4px; background: var(--line); }
+.pv-track { display: flex; justify-content: space-between; position: relative; }
+.pv-track::before { content: ""; position: absolute; left: 4px; right: 4px; top: 4px; height: 2px; background: var(--line); }
+.pv-track b { width: 10px; height: 10px; border-radius: 50%; background: var(--surface); border: 2px solid var(--line-strong); position: relative; }
+.pv-track b.done { background: var(--primary); border-color: var(--primary); }
+.pv-track b.cur { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.pv-bubbles { display: flex; flex-direction: column; gap: 6px; }
+.pv-bubble { width: 55%; height: 18px; border-radius: 9px 9px 9px 3px; background: var(--surface); border: 1px solid var(--line); }
+.pv-bubble.mine { align-self: flex-end; width: 45%; background: var(--primary); border-color: var(--primary); border-radius: 9px 9px 3px 9px; }
+.pv-btn {
+  align-self: flex-start; margin-top: auto; padding: 6px 12px; border-radius: 8px; background: var(--primary); color: #fff;
+  font-size: 11px; font-weight: 700;
+}
+
+/* Interruptores */
+.toggles { display: flex; flex-direction: column; }
+.toggle-row { display: flex; align-items: center; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line-2); }
+.toggle-row:first-child { padding-top: 0; }
+.toggle-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.toggle-row.is-disabled { opacity: .6; }
+.toggle-text { flex: 1; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+.toggle-text b { font-weight: 600; }
+.toggle-text small { color: var(--muted); font-size: 13px; }
+.toggle-text .btn-link { font-size: 13px; padding: 2px 0 0; }
+.switch {
+  width: 46px; height: 26px; border-radius: 999px; border: 0; padding: 3px; background: var(--line-strong); cursor: pointer;
+  flex-shrink: 0; transition: background .25s; display: flex;
+}
+.switch i { width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform .3s var(--spring); }
+.switch.on { background: var(--primary); }
+.switch.on i { transform: translateX(20px); }
+.switch:disabled { cursor: not-allowed; }
+
+@media (max-width: 900px) {
+  .settings-layout { grid-template-columns: 1fr; }
+  .settings-nav { position: static; flex-direction: row; overflow-x: auto; gap: 6px; }
+  .settings-tab { flex-shrink: 0; }
+  .settings-tab small { display: none; }
+  .appearance { grid-template-columns: 1fr; }
+  .preview { position: static; }
+}
+@media (max-width: 560px) {
+  .form-2 { grid-template-columns: 1fr; }
+  .profile-photo { flex-direction: column; align-items: flex-start; }
+  .settings-card { padding: 18px; }
+}

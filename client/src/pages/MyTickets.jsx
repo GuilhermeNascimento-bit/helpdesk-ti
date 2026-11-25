@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth, useSocketEvent } from '../context.jsx';
-import { ACTIVE, PENDING, dueInfo, firstName, fmtDate, fmtDay, greeting, timeAgo } from '../constants.js';
+import { ACTIVE, PENDING, dueInfo, firstName, fmtDateOnly, fmtDay, greeting, timeAgo } from '../constants.js';
 import { Avatar, Empty, Icons, ProgressTrack, Stars, StatusBadge } from '../components/ui.jsx';
 
 const EXAMPLES = ['A internet não está funcionando', 'Esqueci minha senha', 'A impressora não imprime', 'O computador está lento'];
@@ -134,7 +134,7 @@ export default function MyTickets() {
                 <div className="tcard-foot">
                   {t.technician_name ? (
                     <>
-                      <Avatar name={t.technician_name} size={24} />
+                      <Avatar name={t.technician_name} src={t.technician_avatar} size={24} />
                       <span>
                         {t.status === 'visita_agendada' ? `${firstName(t.technician_name)} vai até você` : `${firstName(t.technician_name)} está cuidando`}
                       </span>
@@ -165,7 +165,7 @@ export default function MyTickets() {
                 <span className="history-title">{t.title}</span>
                 <span className="history-who">{t.technician_name ? firstName(t.technician_name) : '—'}</span>
                 {t.rating ? <Stars value={t.rating} size={13} /> : <StatusBadge status={t.status} />}
-                <span className="muted small">{fmtDate(t.closed_at || t.updated_at).split(' ')[0]}</span>
+                <span className="muted small">{fmtDateOnly(t.closed_at || t.updated_at)}</span>
               </Link>
             ))}
           </div>

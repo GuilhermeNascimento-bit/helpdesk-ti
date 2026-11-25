@@ -15,7 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Lista de técnicos (para atribuir chamados)
 usersRouter.get('/technicians', requireRole('tecnico', 'admin'), (_req, res) => {
-  res.json(db.prepare("SELECT id, name, role FROM users WHERE active = 1 AND role IN ('tecnico','admin') ORDER BY name").all());
+  res.json(db.prepare("SELECT id, name, role, avatar_url FROM users WHERE active = 1 AND role IN ('tecnico','admin') ORDER BY name").all());
 });
 
 usersRouter.use(requireRole('admin'));

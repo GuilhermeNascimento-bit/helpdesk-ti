@@ -1,5 +1,7 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { setLanguage } from './i18n.js';
+import { useToast } from './context.jsx';
 
 /**
  * Preferências visuais guardadas no navegador:
@@ -9,7 +11,59 @@ import { setLanguage } from './i18n.js';
  */
 const KEY = 'helpdesk_prefs';
 export const DEFAULT_ACCENT = '#0e7c74';
-const DEFAULTS = { theme: 'system', lang: 'pt', motion: 'full', accent: DEFAULT_ACCENT };
+const DEFAULTS = {
+  theme: 'system',
+  lang: 'pt',
+  motion: 'full',
+  accent: DEFAULT_ACCENT,
+  toasts: true, // avisos no canto da tela
+  sound: false, // som curto ao chegar um aviso
+  desktop: false, // notificação do sistema quando a aba está em segundo plano
+};
+
+/** Som curto de aviso (gerado na hora, sem arquivo de áudio). */
+let audioCtx;
+export function ping() {
+  try {
+    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
+    const t = audioCtx.currentTime;
+    [880, 1320].forEach((f, i) => {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t + i * 0.12);
+      g.gain.exponentialRampToValueAtTime(0.18, t + i * 0.12 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.12 + 0.22);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(t + i * 0.12);
+      o.stop(t + i * 0.12 + 0.25);
+    });
+  } catch {
+    /* navegador sem áudio */
+  }
+}
+
+/** Avisos em tempo real respeitando as preferências da pessoa. */
+export function useNotifier(navigate) {
+  const { prefs } = usePrefs();
+  const { push } = useToast();
+  return useCallback(
+    (toast) => {
+      if (prefs.sound) ping();
+      if (prefs.desktop && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+        const n = new Notification(toast.title, { body: toast.body || '', tag: toast.to || toast.title });
+        n.onclick = () => {
+          window.focus();
+          if (toast.to) navigate(toast.to);
+          n.close();
+        };
+      }
+      if (prefs.toasts) push(toast);
+    },
+    [prefs.sound, prefs.desktop, prefs.toasts, push, navigate]
+  );
+}
 
 /** Cores prontas para a personalização. */
 export const ACCENTS = [
@@ -263,7 +317,7 @@ export function PrefsPanel() {
 }
 
 /** Botão que abre o painel de preferências num balão. */
-export function PrefsButton({ placement = 'down', className = '' }) {
+export function PrefsButton({ placement = 'down', className = '', allLink = false }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
   useEffect(() => {
@@ -286,6 +340,11 @@ export function PrefsButton({ placement = 'down', className = '' }) {
         <div className={`prefs-pop prefs-${placement}`} role="dialog" aria-label="Preferências">
           <strong className="prefs-title">Preferências</strong>
           <PrefsPanel />
+          {allLink && (
+            <Link to="/configuracoes" className="prefs-all" onClick={() => setOpen(false)}>
+              Todas as configurações
+            </Link>
+          )}
         </div>
       )}
     </div>

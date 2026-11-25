@@ -82,7 +82,7 @@ statsRouter.get('/', requireRole('admin'), (_req, res) => {
     ),
     byCategory: all('SELECT category, COUNT(*) AS n FROM tickets GROUP BY category ORDER BY n DESC'),
     technicians: all(`
-      SELECT u.id, u.name,
+      SELECT u.id, u.name, u.avatar_url,
              COUNT(t.id) AS total,
              SUM(CASE WHEN t.status IN ${ACTIVE} THEN 1 ELSE 0 END) AS active,
              SUM(CASE WHEN t.status IN ${DONE} THEN 1 ELSE 0 END) AS resolved,

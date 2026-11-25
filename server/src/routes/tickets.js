@@ -10,15 +10,15 @@ ticketsRouter.use(requireAuth);
 
 const TICKET_SELECT = `
   SELECT t.*,
-         r.name AS requester_name, r.email AS requester_email, r.department AS requester_department,
-         te.name AS technician_name,
+         r.name AS requester_name, r.email AS requester_email, r.department AS requester_department, r.avatar_url AS requester_avatar,
+         te.name AS technician_name, te.avatar_url AS technician_avatar,
          (SELECT COUNT(*) FROM messages m WHERE m.ticket_id = t.id AND m.is_system = 0) AS message_count
   FROM tickets t
   JOIN users r ON r.id = t.requester_id
   LEFT JOIN users te ON te.id = t.technician_id`;
 
 const MESSAGE_SELECT = `
-  SELECT m.*, u.name AS user_name, u.role AS user_role
+  SELECT m.*, u.name AS user_name, u.role AS user_role, u.avatar_url AS user_avatar
   FROM messages m LEFT JOIN users u ON u.id = m.user_id`;
 
 function deriveTitle(text) {

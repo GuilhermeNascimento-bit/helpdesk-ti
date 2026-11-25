@@ -176,7 +176,7 @@ export default function TicketList({ scope }) {
                 <span className="tl-cell">
                   {t.technician_name ? (
                     <>
-                      <Avatar name={t.technician_name} size={24} /> {firstName(t.technician_name)}
+                      <Avatar name={t.technician_name} src={t.technician_avatar} size={24} /> {firstName(t.technician_name)}
                     </>
                   ) : (
                     <span className="meta-warn">Ninguém</span>
@@ -242,7 +242,7 @@ function WaitingTable({ tickets }) {
               </span>
             </span>
             <span className="tl-cell">
-              {t.technician_name && <Avatar name={t.technician_name} size={24} />} {firstName(t.technician_name)}
+              {t.technician_name && <Avatar name={t.technician_name} src={t.technician_avatar} size={24} />} {firstName(t.technician_name)}
             </span>
             <span className={`due ${info?.overdue ? 'due-late' : info?.days <= 1 ? 'due-soon' : ''}`}>
               <b>{fmtDay(t.pending_due)}</b>

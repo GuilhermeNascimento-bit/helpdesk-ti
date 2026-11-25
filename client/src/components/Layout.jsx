@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth, useSocket, useSocketEvent, useToast } from '../context.jsx';
 import { ROLE, dueInfo, isStaff, firstName } from '../constants.js';
 import { Avatar, Icons, Toasts } from './ui.jsx';
 import ErrorBoundary from './ErrorBoundary.jsx';
-import { PrefsButton } from '../prefs.jsx';
+import { PrefsButton, useNotifier } from '../prefs.jsx';
 
 export default function Layout() {
   const { user, logout } = useAuth();
-  const { push } = useToast();
+  const navigate = useNavigate();
+  const push = useNotifier(navigate);
   const socket = useSocket();
   const location = useLocation();
   const staff = isStaff(user);
@@ -127,12 +128,12 @@ export default function Layout() {
                   {Icons.plus} <span className="hide-sm">Abrir chamado</span>
                 </Link>
               )}
-              <div className="me-chip">
-                <Avatar name={user.name} size={30} />
+              <Link to="/configuracoes" className="me-chip" title="Minhas configurações">
+                <Avatar name={user.name} src={user.avatar_url} size={30} />
                 <span className="hide-sm">{firstName(user.name)}</span>
                 {conn}
-              </div>
-              <PrefsButton />
+              </Link>
+              <PrefsButton allLink />
               <button className="icon-btn" onClick={logout} title="Sair">
                 {Icons.logout}
               </button>
@@ -152,6 +153,7 @@ export default function Layout() {
     { to: '/pendencias', label: 'Pendências', icon: Icons.box, count: waiting.n, late: waiting.late > 0 },
     { to: '/chamados', label: 'Todos os chamados', icon: Icons.list, end: true },
     { to: '/desempenho', label: 'Meu desempenho', icon: Icons.trophy },
+    { to: '/configuracoes', label: 'Configurações', icon: Icons.cog },
     ...(user.role === 'admin'
       ? [{ to: '/usuarios', label: 'Usuários', icon: Icons.users, count: pendingUsers, late: pendingUsers > 0, lateTitle: 'Cadastros aguardando aprovação' }]
       : []),
@@ -173,14 +175,14 @@ export default function Layout() {
             {conn} {online ? 'Conectado em tempo real' : 'Reconectando…'}
           </span>
           <div className="topbar-right">
-            <PrefsButton />
-            <div className="me-chip">
-              <Avatar name={user.name} size={30} />
+            <PrefsButton allLink />
+            <Link to="/configuracoes" className="me-chip" title="Minhas configurações">
+              <Avatar name={user.name} src={user.avatar_url} size={30} />
               <span className="me-chip-text hide-sm">
                 <b>{user.name}</b>
                 <small>{ROLE[user.role]}</small>
               </span>
-            </div>
+            </Link>
             <button className="icon-btn" onClick={logout} title="Sair">
               {Icons.logout}
             </button>
