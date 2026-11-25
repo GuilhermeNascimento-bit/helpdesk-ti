@@ -785,7 +785,7 @@ function StaffPanel({ ticket, me, act }) {
             <select
               value={ticket.technician_id ?? ''}
               disabled={!!busy}
-              onChange={(e) => e.target.value && run('assign', '/assign', { technician_id: Number(e.target.value) })}
+              onChange={(e) => e.target.value && run('assign', '/assign', { technician_id: e.target.value })}
             >
               <option value="">Ninguém</option>
               {technicians.map((t) => (

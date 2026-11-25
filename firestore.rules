@@ -1,0 +1,98 @@
+rules_version = '2';
+
+// Regras de segurança do Helpdesk T.I no Firestore.
+// O site roda no navegador, então é AQUI que se garante quem pode ler e alterar o quê.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- quem é quem ----------
+    function signedIn() { return request.auth != null; }
+    function profile() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    // Conta confirmada pelo e-mail, com ficha aprovada pelo admin e ativa
+    function approved() {
+      return signedIn() && request.auth.token.email_verified == true
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && profile().approved == true && profile().active == true;
+    }
+    function staff() { return approved() && profile().role in ['tecnico', 'admin']; }
+    function admin() { return approved() && profile().role == 'admin'; }
+    function onlyChanges(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
+
+    // ---------- usuários ----------
+    match /users/{uid} {
+      allow read: if approved() || (signedIn() && request.auth.uid == uid);
+
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.active == true
+        && (
+          // cadastro normal: entra como colaborador, esperando aprovação
+          (request.resource.data.role == 'colaborador' && request.resource.data.approved == false)
+          // primeiro cadastro do projeto: vira admin (só uma vez, junto com meta/bootstrap)
+          || (request.resource.data.role == 'admin' && request.resource.data.approved == true
+              && !exists(/databases/$(database)/documents/meta/bootstrap)
+              && getAfter(/databases/$(database)/documents/meta/bootstrap).data.uid == uid)
+        )
+        // admin criando a conta de outra pessoa
+        || admin();
+
+      allow update: if admin()
+        // a própria pessoa só mexe no perfil (não no perfil de acesso, aprovação ou e-mail)
+        || (approved() && request.auth.uid == uid && onlyChanges(['name', 'department', 'location', 'avatar_url']));
+
+      // recusar cadastro: só os que ainda não foram aprovados
+      allow delete: if admin() && resource.data.approved == false;
+    }
+
+    // ---------- controle interno ----------
+    match /meta/bootstrap {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+    }
+    // Contador do número dos chamados (#1, #2, ...): só pode subir de 1 em 1
+    match /meta/counters {
+      allow read: if approved();
+      allow create: if approved() && request.resource.data.tickets == 1;
+      allow update: if approved() && request.resource.data.tickets == resource.data.tickets + 1;
+    }
+
+    // ---------- chamados ----------
+    match /tickets/{ticketId} {
+      function isRequester() { return approved() && resource.data.requester_id == request.auth.uid; }
+
+      allow read: if staff() || isRequester();
+
+      allow create: if approved()
+        && request.resource.data.requester_id == request.auth.uid
+        && request.resource.data.status == 'aberto'
+        && request.resource.data.technician_id == null
+        && getAfter(/databases/$(database)/documents/meta/counters).data.tickets == int(ticketId);
+
+      allow update: if staff()
+        // quem abriu pode: conversar, avaliar, reabrir e cancelar. Não troca técnico, prioridade nem categoria.
+        || (isRequester()
+            && request.resource.data.requester_id == resource.data.requester_id
+            && request.resource.data.technician_id == resource.data.technician_id
+            && request.resource.data.status in ['aberto', 'em_atendimento', 'fechado', 'cancelado', resource.data.status]
+            && onlyChanges(['status', 'rating', 'rating_comment', 'closed_at', 'updated_at', 'message_count', 'last_event',
+                            'last_actor', 'last_message', 'resolution_type', 'resolution_note', 'resolved_at', 'visit_at',
+                            'pending_type', 'pending_item', 'pending_due', 'pending_since']));
+
+      // ---------- conversa do chamado ----------
+      match /messages/{messageId} {
+        function canSee() {
+          return staff() || (approved() && get(/databases/$(database)/documents/tickets/$(ticketId)).data.requester_id == request.auth.uid);
+        }
+        allow read: if canSee();
+        allow create: if canSee()
+          && (request.resource.data.user_id == request.auth.uid
+              || (request.resource.data.user_id == null && request.resource.data.is_system == 1));
+      }
+    }
+
+    // ---------- "fulano está digitando" ----------
+    match /typing/{ticketId} {
+      allow read, write: if approved();
+    }
+  }
+}

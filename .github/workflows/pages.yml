@@ -1,5 +1,6 @@
 # Publica a demonstração no GitHub Pages a cada envio para a main.
-# Nessa versão não há servidor: a "API" e o tempo real rodam no navegador (VITE_DEMO=1).
+# Nessa versão não há servidor Node: os dados ficam no Firebase (login + Firestore) e a
+# demonstração para recrutadores roda no próprio navegador.
 name: Demonstração no GitHub Pages
 
 on:
@@ -29,7 +30,8 @@ jobs:
       - run: npm ci --prefix client
       - run: npm run build --prefix client
         env:
-          VITE_DEMO: "1"
+          # Contas de verdade pelo Firebase; o botão "Testar a demonstração" continua rodando no navegador
+          VITE_BACKEND: firebase
           VITE_BASE: /${{ github.event.repository.name }}/
       # O GitHub Pages entrega o 404.html para endereços internos (ex.: /chamados/5): o app abre a página certa
       - run: cp client/dist/index.html client/dist/404.html

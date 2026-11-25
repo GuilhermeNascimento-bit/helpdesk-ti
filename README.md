@@ -8,6 +8,17 @@ App web de chamados de T.I: o colaborador abre um chamado, um técnico assume, o
 
 Essa versão roda inteira no navegador, publicada no GitHub Pages pelo workflow `.github/workflows/pages.yml` (`VITE_DEMO=1`). A "API" (`client/src/demo/server.js`) segue as mesmas regras do servidor Node e guarda os dados no navegador de cada visitante. O tempo real funciona entre abas do mesmo navegador. Um técnico robô assume os chamados novos e responde no chat, para quem testa numa aba só. Na tela de login dá pra restaurar os dados de exemplo.
 
+## Contas de verdade com Firebase (GitHub Pages)
+
+O site do GitHub Pages usa o Firebase (projeto `helpdesk-ti-183a`): login com e-mail e senha, confirmação por link no e-mail, aprovação do admin e dados no Firestore (`client/src/fb/`). A segurança fica em `firestore.rules`. A demonstração para recrutadores continua na tela de login ("Teste sem cadastro") e roda só no navegador.
+
+**Falta para funcionar** (console do Firebase → Authentication):
+1. "Vamos começar" → "Método de login" → **E-mail/senha** → ativar → Salvar.
+2. "Configurações" → "Domínios autorizados" → adicionar `guilhermenascimento-bit.github.io`.
+3. **Cadastre-se primeiro no site:** a primeira conta do projeto vira administradora.
+
+Publicar mudanças nas regras: `npx firebase-tools deploy --only firestore:rules`.
+
 ## Publicar no Render (servidor de verdade)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/GuilhermeNascimento-bit/helpdesk-ti)

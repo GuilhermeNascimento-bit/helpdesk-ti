@@ -136,3 +136,6 @@ a.me-chip:hover { border-color: var(--primary); }
 /* Aviso da demonstração no navegador (GitHub Pages) */
 .demo-browser { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
 .demo-reset { font-size: 12.5px; padding: 0; height: auto; }
+
+/* Login com Firebase */
+.forgot { align-self: flex-end; font-size: 12.5px; padding: 2px 0 0; height: auto; }

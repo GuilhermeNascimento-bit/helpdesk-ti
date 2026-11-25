@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context.jsx';
 import { QuickPrefs, isLite } from '../prefs.jsx';
 import { Avatar, DrawnCheck, Icons, ProgressTrack, Spinner, StatusBadge } from '../components/ui.jsx';
-import { api, IS_DEMO } from '../api.js';
+import { api, BACKEND, HAS_DEMO, enterDemo, leaveDemo } from '../api.js';
 
 const Eye = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -78,8 +78,9 @@ function SignupForm({ onBack, onDone }) {
     setError('');
     setBusy(true);
     try {
-      await api('/auth/register', { method: 'POST', body: f });
-      onDone(f.name);
+      leaveDemo();
+      const res = await api('/auth/register', { method: 'POST', body: f });
+      onDone(f.name, f.email, res);
     } catch (err) {
       setError(err.message);
       setBusy(false);
@@ -133,6 +134,8 @@ export default function Login() {
   const { login } = useAuth();
   const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'sent'
   const [sentName, setSentName] = useState('');
+  const [sent, setSent] = useState(null); // { email, firstAdmin, verify }
+  const [info, setInfo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -148,6 +151,7 @@ export default function Login() {
 
   /** Botões de conta de demonstração: preenchem e já entram. */
   const quickLogin = (d) => {
+    if (BACKEND === 'firebase') enterDemo(); // a demonstração roda no navegador, separada das contas de verdade
     setEmail(d.email);
     setPassword(d.password);
     doLogin(d.email, d.password);
@@ -155,17 +159,32 @@ export default function Login() {
 
   const submit = (e) => {
     e.preventDefault();
+    leaveDemo();
     doLogin(email, password);
+  };
+
+  /** Firebase: manda o link para criar uma senha nova. */
+  const forgot = async () => {
+    setError('');
+    setInfo('');
+    try {
+      leaveDemo();
+      await api('/auth/reset', { method: 'POST', body: { email } });
+      setInfo(`Se existir uma conta com ${email}, enviamos um link para criar uma senha nova. Veja também a caixa de spam.`);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const doLogin = async (em, pw) => {
     setError('');
+    setInfo('');
     setPending(false);
     setBusy(true);
     try {
       await login(em, pw);
     } catch (err) {
-      const isPending = /aguardando a aprovação/.test(err.message);
+      const isPending = /aguardando a aprovação|Confirme o seu e-mail/.test(err.message);
       setPending(isPending);
       setError(err.message);
       if (!isPending) setShake((s) => s + 1);
@@ -200,8 +219,10 @@ export default function Login() {
         {mode === 'signup' && (
           <SignupForm
             onBack={() => setMode('login')}
-            onDone={(name) => {
+            onDone={(name, mail, res) => {
               setSentName(name);
+              setSent({ email: mail, firstAdmin: !!res?.firstAdmin, verify: !!res?.verify });
+              setEmail(mail);
               setMode('sent');
             }}
           />
@@ -211,9 +232,18 @@ export default function Login() {
           <div className="login-form signup-sent">
             <DrawnCheck size={76} />
             <h2>Cadastro enviado</h2>
-            <p className="muted">
-              Obrigado, {sentName.split(' ')[0]}. Assim que o administrador aprovar, você já consegue entrar com o seu e-mail e senha.
-            </p>
+            {sent?.verify ? (
+              <p className="muted">
+                Enviamos um link de confirmação para <b>{sent.email}</b>. Abra o e-mail e clique no link (veja também a caixa de spam).{' '}
+                {sent.firstAdmin
+                  ? 'Você é o primeiro cadastro, então já é o administrador: depois de confirmar, é só entrar.'
+                  : 'Depois de confirmar, aguarde o administrador aprovar o seu acesso.'}
+              </p>
+            ) : (
+              <p className="muted">
+                Obrigado, {sentName.split(' ')[0]}. Assim que o administrador aprovar, você já consegue entrar com o seu e-mail e senha.
+              </p>
+            )}
             <button className="btn btn-ghost btn-block" onClick={() => setMode('login')}>
               Voltar para o login
             </button>
@@ -233,14 +263,26 @@ export default function Login() {
           <label className="field">
             <span>Senha</span>
             <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
+            {BACKEND === 'firebase' && (
+              <button type="button" className="btn-link forgot" onClick={forgot}>
+                Esqueci minha senha
+              </button>
+            )}
           </label>
           {error && <div className={`alert ${pending ? 'alert-info' : 'alert-error'}`}>{error}</div>}
+          {info && <div className="alert alert-info">{info}</div>}
           <button className="btn btn-primary btn-lg btn-block btn-shine" disabled={busy}>
             {busy ? <Spinner /> : 'Entrar'}
           </button>
 
           <div className="demo">
-            <span>{demoSite ? 'Entre com um clique para conhecer o sistema:' : 'Contas de demonstração'}</span>
+            <span>
+              {BACKEND === 'firebase'
+                ? 'É recrutador? Teste sem cadastro, com um clique:'
+                : demoSite
+                  ? 'Entre com um clique para conhecer o sistema:'
+                  : 'Contas de demonstração'}
+            </span>
             <div className="demo-list">
               {DEMO.map((d) => (
                 <button
@@ -255,8 +297,8 @@ export default function Login() {
                 </button>
               ))}
             </div>
-            {demoSite && !IS_DEMO && <small className="hint">Site de demonstração: os dados voltam ao estado inicial de tempos em tempos.</small>}
-            {IS_DEMO && (
+            {demoSite && !HAS_DEMO && <small className="hint">Site de demonstração: os dados voltam ao estado inicial de tempos em tempos.</small>}
+            {HAS_DEMO && (
               <div className="demo-browser">
                 <small className="hint">
                   Demonstração: tudo roda no seu navegador e as mudanças ficam só aqui. Abra duas abas, uma como Técnico e outra como

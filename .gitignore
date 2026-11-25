@@ -3,3 +3,4 @@ dist/
 server/data/
 .env
 dist-demo/
+dist-fb/

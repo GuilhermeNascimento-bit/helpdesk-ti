@@ -386,6 +386,17 @@ const EN = {
   'Na demonstração, PDFs e textos podem ter até 1,5 MB.': 'In the demo, PDFs and text files can be up to 1.5 MB.',
   'O armazenamento do navegador encheu. Restaure os dados da demonstração na tela de login.': 'Browser storage is full. Restore the demo data on the sign-in screen.',
 
+  'Esqueci minha senha': 'Forgot my password',
+  'É recrutador? Teste sem cadastro, com um clique:': 'Recruiter? Try it without signing up, in one click:',
+  'Digite o seu e-mail no campo acima e clique de novo.': 'Type your email in the field above and click again.',
+  'Muitas tentativas. Espere alguns minutos e tente de novo.': 'Too many attempts. Wait a few minutes and try again.',
+  'Sem conexão com a internet.': 'No internet connection.',
+  'Por segurança, entre de novo e repita a operação.': 'For security, sign in again and repeat the action.',
+  'Cadastro não encontrado. Crie a sua conta de novo.': 'Account not found. Please sign up again.',
+  'Já existe uma conta com esse e-mail. Tente entrar ou use "Esqueci minha senha".': 'An account with this email already exists. Try signing in or use "Forgot my password".',
+  'PDFs e textos podem ter até 600 KB. Para imagens não há limite: elas são reduzidas.': 'PDFs and text files can be up to 600 KB. Images have no limit: they are resized.',
+  'O e-mail de login não pode ser trocado por aqui. Crie uma conta nova com o e-mail certo e desative esta.': "The sign-in email can't be changed here. Create a new account with the right email and deactivate this one.",
+
   // Cores do site
   'Cor do site': 'Site color',
   'Petróleo': 'Petrol',
@@ -450,6 +461,8 @@ const PATTERNS = [
   [/^(.+) no #(\d+)$/, (m) => `${m[1]} on #${m[2]}`],
   [/^Novo chamado #(\d+)$/, (m) => `New ticket #${m[1]}`],
   [/^Chamado urgente #(\d+)$/, (m) => `Urgent ticket #${m[1]}`],
+  [/^Confirme o seu e-mail para entrar: enviamos um link para (.+) \(veja também a caixa de spam\)\.$/, (m) => `Confirm your email to sign in: we sent a link to ${m[1]} (check your spam folder too).`],
+  [/^Se existir uma conta com (.+), enviamos um link para criar uma senha nova\. Veja também a caixa de spam\.$/, (m) => `If an account exists for ${m[1]}, we sent a link to create a new password. Check your spam folder too.`],
   [/^(Colaborador|Técnico|Administrador) · conta criada em (.+)$/, (m) => `${{ Colaborador: 'Employee', 'Técnico': 'Technician', Administrador: 'Administrator' }[m[1]]} · account created on ${m[2]}`],
   [/^Obrigado, (.+)\. Assim que o administrador aprovar, você já consegue entrar com o seu e-mail e senha\.$/,
     (m) => `Thanks, ${m[1]}. As soon as the administrator approves it, you can sign in with your email and password.`],

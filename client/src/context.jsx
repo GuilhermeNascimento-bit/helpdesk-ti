@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
-import { api, getToken, setToken, IS_DEMO } from './api.js';
+import { api, getToken, setToken, mode, backendLogout } from './api.js';
 
 // ---------- Autenticação ----------
 const AuthCtx = createContext(null);
@@ -31,6 +31,7 @@ export function AuthProvider({ children }) {
     return user;
   };
   const logout = () => {
+    backendLogout();
     setToken(null);
     setUser(null);
   };
@@ -50,11 +51,13 @@ export function SocketProvider({ children }) {
     if (!user) return;
     let s;
     let alive = true;
-    if (IS_DEMO) {
-      // GitHub Pages: tempo real entre as abas do próprio navegador
-      import('./demo/realtime.js').then((m) => {
+    const m = mode();
+    if (m === 'demo' || m === 'firebase') {
+      // GitHub Pages: tempo real entre abas do navegador (demonstração) ou pelo Firestore
+      const load = m === 'demo' ? import('./demo/realtime.js').then((x) => x.createDemoSocket) : import('./fb/realtime.js').then((x) => x.createFirebaseSocket);
+      load.then((create) => {
         if (!alive) return;
-        s = m.createDemoSocket();
+        s = create();
         setSocket(s);
       });
     } else {
